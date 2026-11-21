@@ -1,3 +1,114 @@
+# PyBot × Griffith: complete module I/O distillation
+
+This fork adds an experimental way to learn **each module's complete call result**
+with the official [Griffith](https://github.com/tsukushi-gate/Griffith) library.
+The target includes the return value, the entire updated conversation memory,
+mutable candidate arguments, and exceptions. The model receives the original
+call arguments, rather than six precomputed eligibility flags.
+
+**This is a training and conformance experiment, not a claim that every PyBot
+module has already been reproduced.** The original `python -m pybot` chatbot
+continues to run its existing rules. Learned calls are exposed separately through
+`python -m moduleio predict` and never call the original teacher as a fallback.
+
+**Initial measured result: 0/18 held-out complete calls matched**, for both the
+small LUT model and the floating-point control. The supplied weights are failed
+experimental baselines, not replacements ready for use.
+
+[日本語の設計・再現手順](docs/moduleio/README.ja.md) ·
+[Measured experiment](experiments/moduleio/RESULTS.md)
+
+## Module I/O contract
+
+| Hook | Input | Learned output |
+|---|---|---|
+| `observe` | text, full memory before the call | return, full memory after the call, exception |
+| `respond` | text, full memory before the call | reply or `None`, full memory after the call, exception |
+| `choose` | text, full memory, candidates | return, full updated memory and candidates, exception |
+| `after` | text, chosen reply, full memory | return, full memory after the call, exception |
+
+The collector discovers **116 phase hooks in 102 modules** in the recorded PyBot
+revision. It traces the original runtime without changing the order of calls,
+candidate memory copies, selected response, or random-number progression.
+`None` responses with state changes are retained. A typed JSON codec preserves
+tuple/list distinctions, dictionary order, floating-point bits, and shared
+container references. Unsupported objects or cycles fail explicitly.
+
+The student uses Griffith's `LogicLadderGPT`, with native logic projections and
+logic feed-forward layers. Embeddings, normalization, attention score/softmax,
+and the vocabulary head still use floating-point operations. **Hard evaluation
+means the LUTs are discretized; it does not mean the entire model is a Boolean
+circuit.** The library is pinned to `e0675f4e36596954aa424d522e0ee966bba9a3e1`.
+
+## Install and reproduce
+
+The learning experiment requires Python 3.11+ and PyTorch; the original PyBot
+continues to need only Python 3.8+.
+
+```sh
+pip install '.[moduleio]'
+python -m moduleio inventory
+
+# Every target comes from an actual original module call.
+python examples/moduleio/make_specs.py
+python -m moduleio collect-calls \
+  --spec examples/moduleio/calls.jsonl \
+  --output examples/moduleio/teacher_calls.jsonl.gz
+
+python -m moduleio train \
+  --data examples/moduleio/teacher_calls.jsonl.gz \
+  --checkpoint experiments/moduleio/model.pt \
+  --report experiments/moduleio/training.json \
+  --max-seq-len 1280 --d-model 64 --n-layers 1 \
+  --steps 1000 --batch-size 4 --learning-rate 0.003 \
+  --train-mode ste --seed 0 --split-seed 1 --threads 1
+
+python -m moduleio evaluate \
+  --checkpoint experiments/moduleio/model.pt \
+  --data experiments/moduleio/model.pt.validation.jsonl.gz \
+  --output experiments/moduleio/hard-validation.json --mode hard
+```
+
+Evaluation freely generates the **entire typed output** from the input alone.
+It reports whole-call, return, and memory exact match, valid completed outputs,
+active/inactive cases, per-hook results, and a `None`/unchanged-memory baseline.
+Malformed outputs, missing EOS, and overlength inputs remain failures in the
+denominator. Teacher-forced token accuracy is a separate diagnostic.
+
+Natural conversations can also be traced without reducing their states:
+
+```sh
+python -m moduleio collect \
+  --scenarios examples/moduleio/conversations.jsonl \
+  --output examples/moduleio/runtime_trace.jsonl.gz
+python -m unittest discover -s tests/moduleio -v
+```
+
+Natural traces include the complete pre-call RNG state in model inputs. They
+can be much longer than the small demonstration model's context. Training reports
+every excluded record and never silently truncates inputs or outputs. Independent
+call fixtures instead supply a seed and preserve the caller's process RNG.
+Dates are recorded, not virtualized; module-global caches are not snapshotted.
+No guarantee for arbitrary input lengths, hidden process state, or an entire
+learned conversation is implied by a single-call benchmark.
+
+## Added files
+
+| Path | Purpose |
+|---|---|
+| `moduleio/teacher.py`, `codec.py` | Complete teacher calls and lossless boundary serialization |
+| `moduleio/data.py` | Input-only prompts, full targets, group splits, explicit coverage |
+| `moduleio/model.py`, `training.py` | Official Griffith model, output-only loss, checkpoints |
+| `moduleio/evaluation.py`, `predictor.py` | Free-generation conformance and teacher-free prediction |
+| `examples/moduleio/` | Input fixtures, recorded calls, all-hook conversation trace |
+| `experiments/moduleio/` | Reproducible weights, split records, measured results |
+
+---
+
+## Original PyBot
+
+The description below documents the original rule-based chatbot.
+
 <p align="center"><img src="assets/banner.png" alt="PyBot: no weights, no training, just rules" width="100%"></p>
 
 <div align="center">

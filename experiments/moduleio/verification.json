@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-21",
+  "moduleio_tests": {
+    "command": "python -m unittest discover -s tests/moduleio -v",
+    "passed": 51,
+    "failed": 0,
+    "skipped": 0
+  },
+  "original_cli_tests": {
+    "command": "python -m unittest discover -s tests -v",
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0
+  },
+  "diff_check": "passed",
+  "scope": "Passing infrastructure tests does not imply learned module equivalence; held-out full-call matches remain zero."
+}

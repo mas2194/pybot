@@ -1,0 +1,235 @@
+{
+  "contract": "pybot-module-call-v1",
+  "trained_hooks": [
+    "a_cake_between_its_layers.respond",
+    "favourites.observe",
+    "favourites.respond",
+    "group_ages.observe",
+    "group_ages.respond",
+    "name_taken_back.observe"
+  ],
+  "training_data_sha256": "2804d72b7ea4d254daaff79423bffa9882275680bdde281c45723e57a97f7051",
+  "validation_data_sha256": "82bbe7ca2218ea08fc9804523395744212638f8031b7fb9236e7b8a74aec7b8f",
+  "coverage": {
+    "input_records": 120,
+    "included_records": 120,
+    "active_records": 95,
+    "excluded_records": 0,
+    "exclusion_reasons": {},
+    "excluded": [],
+    "hooks": {
+      "favourites.observe": 24,
+      "favourites.respond": 24,
+      "group_ages.observe": 20,
+      "group_ages.respond": 20,
+      "name_taken_back.observe": 24,
+      "a_cake_between_its_layers.respond": 8
+    }
+  },
+  "split": {
+    "method": "conversation/family groups; duplicate inputs join groups",
+    "seed": 1,
+    "validation_fraction": 0.2,
+    "train_groups": [
+      "ages-10-13",
+      "ages-2-4",
+      "ages-3-6",
+      "ages-4-7",
+      "ages-5-8",
+      "ages-6-9",
+      "ages-7-10",
+      "ages-8-11",
+      "ages-9-12",
+      "cake-boundary",
+      "favourite-colour-blue",
+      "favourite-colour-brown",
+      "favourite-colour-green",
+      "favourite-colour-orange",
+      "favourite-colour-pink",
+      "favourite-colour-red",
+      "favourite-colour-silver",
+      "favourite-colour-teal",
+      "favourite-colour-white",
+      "favourite-colour-yellow",
+      "name-correction-alex",
+      "name-correction-jo",
+      "name-correction-kay",
+      "name-correction-lee",
+      "name-correction-robin",
+      "name-correction-sam"
+    ],
+    "validation_groups": [
+      "ages-11-14",
+      "favourite-colour-black",
+      "favourite-colour-purple",
+      "name-correction-kim",
+      "name-correction-max"
+    ],
+    "train_records": 102,
+    "validation_records": 18,
+    "independent_components": 31,
+    "components_kept_for_training_coverage": [
+      {
+        "hook": "a_cake_between_its_layers.respond",
+        "component": "cake-boundary"
+      }
+    ],
+    "hooks_without_validation": [
+      "a_cake_between_its_layers.respond"
+    ]
+  },
+  "training_log": {
+    "format": "moduleio-training-report-v1",
+    "model": {
+      "max_seq_len": 1280,
+      "d_model": 64,
+      "n_heads": 2,
+      "n_layers": 1,
+      "mlp_ratio": 2,
+      "qk_bits": 64,
+      "v_bits": 64,
+      "logic": true
+    },
+    "training": {
+      "steps": 1000,
+      "batch_size": 4,
+      "seed": 0,
+      "learning_rate": 0.003,
+      "threads": 1,
+      "train_mode": "ste",
+      "device": "cpu"
+    },
+    "training_examples": 102,
+    "dataset_sha256": "4c89f72747a3fe920d127f67bc83102d60885723efb52e926f874f9fac98dc6e",
+    "parameters": 117637,
+    "max_input_tokens": 554,
+    "max_output_tokens_including_eos": 707,
+    "max_total_tokens": 1090,
+    "truncated_examples": 0,
+    "training_seconds": 247.29558023200025,
+    "seconds_per_step": 0.24729558023200024,
+    "teacher_forced_before": {
+      "soft": {
+        "conditioning": "correct output prefix (teacher forcing); not free generation",
+        "mode": "soft",
+        "examples": 102,
+        "output_tokens_including_eos": 30519,
+        "output_nll_nats": 5.7334892252700165,
+        "output_bits_per_token": 8.271676472287357,
+        "teacher_forced_token_accuracy": 0.004063042694714768,
+        "teacher_forced_sequence_accuracy": 0.0
+      },
+      "hard": {
+        "conditioning": "correct output prefix (teacher forcing); not free generation",
+        "mode": "hard",
+        "examples": 102,
+        "output_tokens_including_eos": 30519,
+        "output_nll_nats": 5.736861984126436,
+        "output_bits_per_token": 8.276542334763628,
+        "teacher_forced_token_accuracy": 0.0038336773813034504,
+        "teacher_forced_sequence_accuracy": 0.0
+      }
+    },
+    "teacher_forced_after": {
+      "soft": {
+        "conditioning": "correct output prefix (teacher forcing); not free generation",
+        "mode": "soft",
+        "examples": 102,
+        "output_tokens_including_eos": 30519,
+        "output_nll_nats": 1.132955848321115,
+        "output_bits_per_token": 1.6345097839190215,
+        "teacher_forced_token_accuracy": 0.609030440053737,
+        "teacher_forced_sequence_accuracy": 0.0
+      },
+      "hard": {
+        "conditioning": "correct output prefix (teacher forcing); not free generation",
+        "mode": "hard",
+        "examples": 102,
+        "output_tokens_including_eos": 30519,
+        "output_nll_nats": 1.0935492183548183,
+        "output_bits_per_token": 1.5776580342884987,
+        "teacher_forced_token_accuracy": 0.6245945148923622,
+        "teacher_forced_sequence_accuracy": 0.0
+      }
+    },
+    "curve": [
+      {
+        "step": 1,
+        "output_nll_nats": 5.726108074188232,
+        "gradient_norm_before_clipping": 0.6346532702445984,
+        "elapsed_seconds": 0.40799884399984876
+      },
+      {
+        "step": 100,
+        "output_nll_nats": 1.8050321340560913,
+        "gradient_norm_before_clipping": 0.27856168150901794,
+        "elapsed_seconds": 23.628825063000477
+      },
+      {
+        "step": 200,
+        "output_nll_nats": 1.49214768409729,
+        "gradient_norm_before_clipping": 0.2113116830587387,
+        "elapsed_seconds": 49.045101900999725
+      },
+      {
+        "step": 300,
+        "output_nll_nats": 1.4621880054473877,
+        "gradient_norm_before_clipping": 0.23210296034812927,
+        "elapsed_seconds": 73.6393106530004
+      },
+      {
+        "step": 400,
+        "output_nll_nats": 1.3967887163162231,
+        "gradient_norm_before_clipping": 0.28996044397354126,
+        "elapsed_seconds": 99.40884371300035
+      },
+      {
+        "step": 500,
+        "output_nll_nats": 1.3171463012695312,
+        "gradient_norm_before_clipping": 0.3393644392490387,
+        "elapsed_seconds": 125.01783627999976
+      },
+      {
+        "step": 600,
+        "output_nll_nats": 0.9791345000267029,
+        "gradient_norm_before_clipping": 0.24429981410503387,
+        "elapsed_seconds": 147.82232904500052
+      },
+      {
+        "step": 700,
+        "output_nll_nats": 0.8612382411956787,
+        "gradient_norm_before_clipping": 0.23091533780097961,
+        "elapsed_seconds": 173.55749829599972
+      },
+      {
+        "step": 800,
+        "output_nll_nats": 1.1030522584915161,
+        "gradient_norm_before_clipping": 0.26307302713394165,
+        "elapsed_seconds": 198.35403012700044
+      },
+      {
+        "step": 900,
+        "output_nll_nats": 1.0908061265945435,
+        "gradient_norm_before_clipping": 0.2972162961959839,
+        "elapsed_seconds": 223.0966462209999
+      },
+      {
+        "step": 1000,
+        "output_nll_nats": 1.148156762123108,
+        "gradient_norm_before_clipping": 0.3363511264324188,
+        "elapsed_seconds": 247.29537775800054
+      }
+    ],
+    "torch_version": "2.15.0+cpu",
+    "implementation": "official Griffith LogicLadderGPT; FP embedding/head/normalization/softmax remain",
+    "limitations": "Teacher-forced diagnostics do not establish complete free-generation I/O agreement."
+  },
+  "griffith_revision": "e0675f4e36596954aa424d522e0ee966bba9a3e1",
+  "scope": "return, full memory, mutable candidates, and exception; isolated fixture RNG is external, not a learned global side effect",
+  "source_commits": [
+    "7d63c7fbebb44c7e466e5c8b5c1f341ab767929e"
+  ],
+  "training_fixtures": [
+    "isolated_seeded_call"
+  ]
+}
